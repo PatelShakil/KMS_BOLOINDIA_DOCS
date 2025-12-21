@@ -1,0 +1,80 @@
+{
+  "dashboard": {
+    "title": "Kong Gateway - BoloIndia",
+    "tags": ["kong", "gateway", "boloindia"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total Requests",
+        "type": "stat",
+        "targets": [{
+          "expr": "sum(kong_http_requests_total)",
+          "legendFormat": "Total Requests"
+        }],
+        "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+      },
+      {
+        "id": 2,
+        "title": "Request Rate (req/s)",
+        "type": "graph",
+        "targets": [{
+          "expr": "rate(kong_http_requests_total[5m])",
+          "legendFormat": "{{service}}"
+        }],
+        "gridPos": { "x": 6, "y": 0, "w": 18, "h": 8 }
+      },
+      {
+        "id": 3,
+        "title": "Latency (P95)",
+        "type": "graph",
+        "targets": [{
+          "expr": "histogram_quantile(0.95, sum(rate(kong_latency_bucket[5m])) by (le, service))",
+          "legendFormat": "{{service}}"
+        }],
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 }
+      },
+      {
+        "id": 4,
+        "title": "Status Codes",
+        "type": "piechart",
+        "targets": [{
+          "expr": "sum by (code) (kong_http_requests_total)",
+          "legendFormat": "{{code}}"
+        }],
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 }
+      },
+      {
+        "id": 5,
+        "title": "Bandwidth (MB/s)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(kong_bandwidth{type='egress'}[5m]) / 1024 / 1024",
+            "legendFormat": "Egress"
+          },
+          {
+            "expr": "rate(kong_bandwidth{type='ingress'}[5m]) / 1024 / 1024",
+            "legendFormat": "Ingress"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 }
+      },
+      {
+        "id": 6,
+        "title": "Service Health",
+        "type": "table",
+        "targets": [{
+          "expr": "kong_upstream_target_health",
+          "legendFormat": "{{upstream}} - {{target}}"
+        }],
+        "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 }
+      }
+    ],
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  }
+}

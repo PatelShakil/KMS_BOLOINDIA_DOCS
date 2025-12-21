@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kong Admin Dashboard - BoloIndia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-primary to-secondary text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold">🦍 Kong Gateway</span>
+                    <span class="ml-4 text-sm opacity-75">BoloIndia Platform</span>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="showTab('dashboard')" id="tab-dashboard" class="px-4 py-2 rounded-md hover:bg-white/20 transition">
+                        📊 Dashboard
+                    </button>
+                    <button onclick="showTab('services')" id="tab-services" class="px-4 py-2 rounded-md hover:bg-white/20 transition">
+                        🔧 Services
+                    </button>
+                    <button onclick="showTab('routes')" id="tab-routes" class="px-4 py-2 rounded-md hover:bg-white/20 transition">
+                        🛣️ Routes
+                    </button>
+                    <button onclick="showTab('plugins')" id="tab-plugins" class="px-4 py-2 rounded-md hover:bg-white/20 transition">
+                        🔌 Plugins
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard Tab -->
+        <div id="content-dashboard" class="tab-content">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Services</p>
+                            <p id="stat-services" class="text-3xl font-bold text-primary">0</p>
+                        </div>
+                        <div class="bg-primary/10 p-3 rounded-full">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Routes</p>
+                            <p id="stat-routes" class="text-3xl font-bold text-green-600">0</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Plugins</p>
+                            <p id="stat-plugins" class="text-3xl font-bold text-yellow-600">0</p>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Status</p>
+                            <p id="stat-status" class="text-xl font-bold text-green-600">● Online</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Overview -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">📦 Registered Services</h2>
+                    <button onclick="loadDashboard()" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-medium transition">
+                        🔄 Refresh
+                    </button>
+                </div>
+                <div id="dashboard-services-list" class="space-y-3">
+                    <!-- Services will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Tab -->
+        <div id="content-services" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">🔧 Services Management</h2>
+                    <button onclick="showAddServiceModal()" class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-medium transition">
+                        ➕ Add Service
+                    </button>
+                </div>
+                <div id="services-list" class="space-y-4">
+                    <!-- Services will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Routes Tab -->
+        <div id="content-routes" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">🛣️ Routes Management</h2>
+                    <button onclick="showAddRouteModal()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                        ➕ Add Route
+                    </button>
+                </div>
+                <div id="routes-list" class="space-y-4">
+                    <!-- Routes will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Plugins Tab -->
+        <div id="content-plugins" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">🔌 Plugins Management</h2>
+                    <button onclick="showAddPluginModal()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded-lg font-medium transition">
+                        ➕ Add Plugin
+                    </button>
+                </div>
+                <div id="plugins-list" class="space-y-4">
+                    <!-- Plugins will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Service Modal -->
+    <div id="add-service-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Add New Service</h3>
+            <form id="add-service-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Service Name *</label>
+                    <input type="text" id="service-name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="e.g., auth-service">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Protocol *</label>
+                        <select id="service-protocol" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                            <option value="http">HTTP</option>
+                            <option value="https">HTTPS</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Port *</label>
+                        <input type="number" id="service-port" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="8085">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Host *</label>
+                    <input type="text" id="service-host" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="host.docker.internal">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Path (optional)</label>
+                    <input type="text" id="service-path" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="/auth-service/api">
+                </div>
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-1 bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium transition">
+                        Create Service
+                    </button>
+                    <button type="button" onclick="closeModal('add-service-modal')" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg font-medium transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Route Modal -->
+    <div id="add-route-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Add New Route</h3>
+            <form id="add-route-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Route Name *</label>
+                    <input type="text" id="route-name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600" placeholder="e.g., auth-route">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Service *</label>
+                    <select id="route-service" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600">
+                        <option value="">Select a service...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Path *</label>
+                    <input type="text" id="route-path" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600" placeholder="/api/auth">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Methods (optional - leave unchecked for all methods)</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="GET" class="route-method">
+                            <span>GET</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="POST" class="route-method">
+                            <span>POST</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="PUT" class="route-method">
+                            <span>PUT</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="DELETE" class="route-method">
+                            <span>DELETE</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="PATCH" class="route-method">
+                            <span>PATCH</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="OPTIONS" class="route-method">
+                            <span>OPTIONS</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="route-strip-path" checked>
+                        <span class="text-sm font-medium text-gray-700">Strip Path</span>
+                    </label>
+                </div>
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                        Create Route
+                    </button>
+                    <button type="button" onclick="closeModal('add-route-modal')" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg font-medium transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Plugin Modal -->
+    <div id="add-plugin-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Add New Plugin</h3>
+            <form id="add-plugin-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Plugin Type *</label>
+                    <select id="plugin-name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600">
+                        <option value="">Select plugin...</option>
+                        <option value="cors">CORS</option>
+                        <option value="rate-limiting">Rate Limiting</option>
+                        <option value="jwt">JWT Authentication</option>
+                        <option value="key-auth">API Key Auth</option>
+                        <option value="request-transformer">Request Transformer</option>
+                        <option value="response-transformer">Response Transformer</option>
+                        <option value="file-log">File Log</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Scope</label>
+                    <select id="plugin-scope" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600">
+                        <option value="global">Global (all services)</option>
+                        <option value="service">Specific Service</option>
+                    </select>
+                </div>
+                <div id="plugin-service-select" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Service</label>
+                    <select id="plugin-service" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600">
+                        <option value="">Select a service...</option>
+                    </select>
+                </div>
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                        Create Plugin
+                    </button>
+                    <button type="button" onclick="closeModal('add-plugin-modal')" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg font-medium transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="hidden fixed top-4 right-4 text-white px-6 py-4 rounded-lg shadow-lg z-50 fade-in">
+        <p id="notification-text"></p>
+    </div>
+
+    <script>
+        const KONG_ADMIN = 'http://localhost:8001';
+
+        // Tab Management
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => btn.classList.remove('bg-white/20'));
+            document.getElementById(`tab-${tabName}`).classList.add('bg-white/20');
+            
+            if (tabName === 'dashboard') loadDashboard();
+            if (tabName === 'services') loadServices();
+            if (tabName === 'routes') loadRoutes();
+            if (tabName === 'plugins') loadPlugins();
+        }
+
+        // Notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            text.textContent = message;
+            notification.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 fade-in ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`;
+            notification.classList.remove('hidden');
+            setTimeout(() => notification.classList.add('hidden'), 4000);
+        }
+
+        // Modal Management
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function showAddServiceModal() {
+            document.getElementById('add-service-modal').classList.remove('hidden');
+        }
+
+        function showAddRouteModal() {
+            loadServicesForDropdown();
+            document.getElementById('add-route-modal').classList.remove('hidden');
+        }
+
+        function showAddPluginModal() {
+            loadServicesForDropdown();
+            document.getElementById('add-plugin-modal').classList.remove('hidden');
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            try {
+                const [services, routes, plugins] = await Promise.all([
+                    fetch(`${KONG_ADMIN}/services`).then(r => r.json()),
+                    fetch(`${KONG_ADMIN}/routes`).then(r => r.json()),
+                    fetch(`${KONG_ADMIN}/plugins`).then(r => r.json())
+                ]);
+
+                document.getElementById('stat-services').textContent = services.data.length;
+                document.getElementById('stat-routes').textContent = routes.data.length;
+                document.getElementById('stat-plugins').textContent = plugins.data.length;
+                document.getElementById('stat-status').textContent = '● Online';
+                document.getElementById('stat-status').className = 'text-xl font-bold text-green-600';
+
+                const list = document.getElementById('dashboard-services-list');
+                if (services.data.length === 0) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-8">No services configured yet. Add your first service!</p>';
+                } else {
+                    list.innerHTML = services.data.map(service => `
+                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-gray-800">${service.name}</h3>
+                                    <p class="text-sm text-gray-600 font-mono">${service.protocol}://${service.host}:${service.port}${service.path || ''}</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Active</span>
+                                    <button onclick="deleteService('${service.id}', '${service.name}')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded transition">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Dashboard load error:', error);
+                showNotification('Failed to load dashboard: ' + error.message, 'error');
+                document.getElementById('stat-status').textContent = '● Offline';
+                document.getElementById('stat-status').className = 'text-xl font-bold text-red-600';
+            }
+        }
+
+        // Services
+        async function loadServices() {
+            try {
+                const response = await fetch(`${KONG_ADMIN}/services`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                const list = document.getElementById('services-list');
+                if (data.data.length === 0) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-8">No services found. Create your first service!</p>';
+                } else {
+                    list.innerHTML = data.data.map(service => `
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">${service.name}</h3>
+                                    <p class="text-gray-600 font-mono text-sm mb-3">${service.protocol}://${service.host}:${service.port}${service.path || ''}</p>
+                                    <div class="flex space-x-4 text-sm text-gray-500">
+                                        <span>ID: ${service.id.substring(0, 8)}...</span>
+                                        <span>Created: ${new Date(service.created_at * 1000).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="deleteService('${service.id}', '${service.name}')" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition">
+                                        🗑️ Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Services load error:', error);
+                showNotification('Failed to load services: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteService(id, name) {
+            if (!confirm(`⚠️ WARNING: This will delete "${name}" and ALL its routes!\n\nAre you absolutely sure?`)) return;
+            
+            try {
+                console.log(`Attempting to delete service: ${id}`);
+                const response = await fetch(`${KONG_ADMIN}/services/${id}`, { 
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                console.log('Delete response status:', response.status);
+                
+                if (response.status === 204 || response.status === 200) {
+                    showNotification(`✅ Service "${name}" deleted successfully`);
+                    await loadServices();
+                    await loadDashboard();
+                } else {
+                    const errorData = await response.text();
+                    console.error('Delete error response:', errorData);
+                    throw new Error(`Failed to delete (HTTP ${response.status}): ${errorData}`);
+                }
+            } catch (error) {
+                console.error('Delete service error:', error);
+                showNotification(`❌ Failed to delete service: ${error.message}`, 'error');
+            }
+        }
+
+        // Routes
+        async function loadRoutes() {
+            try {
+                const response = await fetch(`${KONG_ADMIN}/routes`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                const list = document.getElementById('routes-list');
+                if (data.data.length === 0) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-8">No routes found. Routes connect paths to services.</p>';
+                } else {
+                    list.innerHTML = data.data.map(route => `
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">${route.name || 'Unnamed Route'}</h3>
+                                    <p class="text-gray-600 font-mono text-sm mb-2">Paths: ${route.paths ? route.paths.join(', ') : 'N/A'}</p>
+                                    <div class="flex flex-wrap gap-2 mb-3">
+                                        ${(route.methods || ['ANY']).map(method => 
+                                            `<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">${method}</span>`
+                                        ).join('')}
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        <span>ID: ${route.id.substring(0, 8)}...</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="deleteRoute('${route.id}', '${route.name || 'this route'}')" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition">
+                                        🗑️ Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Routes load error:', error);
+                showNotification('Failed to load routes: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteRoute(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+            
+            try {
+                console.log(`Attempting to delete route: ${id}`);
+                const response = await fetch(`${KONG_ADMIN}/routes/${id}`, { 
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                console.log('Delete response status:', response.status);
+                
+                if (response.status === 204 || response.status === 200) {
+                    showNotification(`✅ Route "${name}" deleted successfully`);
+                    await loadRoutes();
+                    await loadDashboard();
+                } else {
+                    const errorData = await response.text();
+                    console.error('Delete error response:', errorData);
+                    throw new Error(`Failed to delete (HTTP ${response.status})`);
+                }
+            } catch (error) {
+                console.error('Delete route error:', error);
+                showNotification(`❌ Failed to delete route: ${error.message}`, 'error');
+            }
+        }
+
+        // Plugins
+        async function loadPlugins() {
+            try {
+                const response = await fetch(`${KONG_ADMIN}/plugins`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                const list = document.getElementById('plugins-list');
+                if (data.data.length === 0) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-8">No plugins enabled. Enable your first plugin!</p>';
+                } else {
+                    list.innerHTML = data.data.map(plugin => `
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">${plugin.name}</h3>
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        Scope: ${plugin.service ? 'Service-specific' : 'Global'}
+                                    </p>
+                                    <div class="text-sm text-gray-500">
+                                        <span>ID: ${plugin.id.substring(0, 8)}...</span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="deletePlugin('${plugin.id}', '${plugin.name}')" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition">
+                                        🗑️ Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Plugins load error:', error);
+                showNotification('Failed to load plugins: ' + error.message, 'error');
+            }
+        }
+
+        async function deletePlugin(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}" plugin?`)) return;
+            
+            try {
+                console.log(`Attempting to delete plugin: ${id}`);
+                const response = await fetch(`${KONG_ADMIN}/plugins/${id}`, { 
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                console.log('Delete response status:', response.status);
+                
+                if (response.status === 204 || response.status === 200) {
+                    showNotification(`✅ Plugin "${name}" deleted successfully`);
+                    await loadPlugins();
+                    await loadDashboard();
+                } else {
+                    const errorData = await response.text();
+                    console.error('Delete error response:', errorData);
+                    throw new Error(`Failed to delete (HTTP ${response.status})`);
+                }
+            } catch (error) {
+                console.error('Delete plugin error:', error);
+                showNotification(`❌ Failed to delete plugin: ${error.message}`, 'error');
+            }
+        }
+
+        // Load services for dropdowns
+        async function loadServicesForDropdown() {
+            try {
+                const response = await fetch(`${KONG_ADMIN}/services`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                const options = data.data.map(service => 
+                    `<option value="${service.id}">${service.name}</option>`
+                ).join('');
+                
+                document.getElementById('route-service').innerHTML = '<option value="">Select a service...</option>' + options;
+                document.getElementById('plugin-service').innerHTML = '<option value="">Select a service...</option>' + options;
+            } catch (error) {
+                console.error('Failed to load services for dropdown:', error);
+            }
+        }
+
+        // Form Submissions
+        document.getElementById('add-service-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('service-name').value,
+                protocol: document.getElementById('service-protocol').value,
+                host: document.getElementById('service-host').value,
+                port: parseInt(document.getElementById('service-port').value),
+                path: document.getElementById('service-path').value || undefined
+            };
+            
+            try {
+                const response = await fetch(`${KONG_ADMIN}/services`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showNotification(`✅ Service "${data.name}" created successfully`);
+                    closeModal('add-service-modal');
+                    document.getElementById('add-service-form').reset();
+                    await loadServices();
+                    await loadDashboard();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to create service');
+                }
+            } catch (error) {
+                console.error('Create service error:', error);
+                showNotification(`❌ Failed to create service: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('add-route-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const methods = Array.from(document.querySelectorAll('.route-method:checked')).map(cb => cb.value);
+            
+            const data = {
+                name: document.getElementById('route-name').value,
+                paths: [document.getElementById('route-path').value],
+                strip_path: document.getElementById('route-strip-path').checked,
+                methods: methods.length > 0 ? methods : undefined
+            };
+            
+            const serviceId = document.getElementById('route-service').value;
+            
+            try {
+                const response = await fetch(`${KONG_ADMIN}/services/${serviceId}/routes`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showNotification(`✅ Route "${data.name}" created successfully`);
+                    closeModal('add-route-modal');
+                    document.getElementById('add-route-form').reset();
+                    document.querySelectorAll('.route-method').forEach(cb => cb.checked = false);
+                    await loadRoutes();
+                    await loadDashboard();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to create route');
+                }
+            } catch (error) {
+                console.error('Create route error:', error);
+                showNotification(`❌ Failed to create route: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('add-plugin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const pluginName = document.getElementById('plugin-name').value;
+            const scope = document.getElementById('plugin-scope').value;
+            const serviceId = scope === 'service' ? document.getElementById('plugin-service').value : null;
+            
+            const data = {
+                name: pluginName,
+                config: {}
+            };
+            
+            // Pre-configured plugin settings
+            if (pluginName === 'cors') {
+                data.config = {
+                    origins: ['*'],
+                    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+                    headers: ['Accept', 'Authorization', 'Content-Type'],
+                    credentials: true,
+                    max_age: 3600
+                };
+            } else if (pluginName === 'rate-limiting') {
+                data.config = {
+                    minute: 100,
+                    hour: 1000,
+                    policy: 'local'
+                };
+            } else if (pluginName === 'file-log') {
+                data.config = {
+                    path: '/tmp/kong.log'
+                };
+            }
+            
+            const endpoint = serviceId 
+                ? `${KONG_ADMIN}/services/${serviceId}/plugins`
+                : `${KONG_ADMIN}/plugins`;
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showNotification(`✅ Plugin "${pluginName}" enabled successfully`);
+                    closeModal('add-plugin-modal');
+                    document.getElementById('add-plugin-form').reset();
+                    await loadPlugins();
+                    await loadDashboard();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to enable plugin');
+                }
+            } catch (error) {
+                console.error('Create plugin error:', error);
+                showNotification(`❌ Failed to enable plugin: ${error.message}`, 'error');
+            }
+        });
+
+        // Plugin scope change
+        document.getElementById('plugin-scope').addEventListener('change', (e) => {
+            const serviceSelect = document.getElementById('plugin-service-select');
+            if (e.target.value === 'service') {
+                serviceSelect.classList.remove('hidden');
+                document.getElementById('plugin-service').required = true;
+            } else {
+                serviceSelect.classList.add('hidden');
+                document.getElementById('plugin-service').required = false;
+            }
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            showTab('dashboard');
+            // Auto-refresh dashboard every 30 seconds
+            setInterval(() => {
+                if (!document.getElementById('content-dashboard').classList.contains('hidden')) {
+                    loadDashboard();
+                }
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
