@@ -239,7 +239,7 @@ BoloIndia is open source! All repositories are available on GitHub:
 ## 🎓 Guided By
 
 **Dr. Kamlendu Pandey**  
-Assistant Professor, Department of Information & Communication Technology  
+Associate Professor, Department of Information & Communication Technology  
 J P Dawer Institute of IT & ICT, VNSGU
 
 Expert guidance in Software Engineering, Microservices Architecture, and System Design.

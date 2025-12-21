@@ -64,7 +64,7 @@ BoloIndia is an open-source, voice-first feedback management platform designed t
   <img src="/img/dr-pandey-profile.jpeg" alt="Dr. Kamlendu Pandey" style={{borderRadius: '10px', width: '180px', height: '180px', objectFit: 'cover', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <div style={{flex: 1, minWidth: '300px'}}>
     <h3>Dr. Kamlendu Pandey</h3>
-    <p><strong>Assistant Professor, Department of Information Technology</strong></p>
+    <p><strong>Associate Professor, Department of Information Technology</strong></p>
 
     **Areas of Expertise:**
     - Software Engineering & Design Patterns
